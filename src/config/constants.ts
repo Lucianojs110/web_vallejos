@@ -29,8 +29,8 @@ export const CALCULATOR_ACTIONS = {
 // ENDPOINTS API GO
 
 export const BASE_URL = `http://localhost:4321`;
-//export const API_ENDPOINT = `https://api.vallejosmateriales.com.ar`;
- export const API_ENDPOINT = `http://127.0.0.1:5002`;
+export const API_ENDPOINT = `https://api.vallejosmateriales.com.ar`;
+// export const API_ENDPOINT = `http://127.0.0.1:5002`;
 
 export const API_VERSION = `${API_ENDPOINT}/api/v1`;
 
