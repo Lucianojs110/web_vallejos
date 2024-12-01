@@ -1,0 +1,82 @@
+---
+import type { IProductDetailResponse } from "./../../types/IProducDetail";
+
+interface RecordWithData extends Record<string, any> {
+  detail?: IProductDetailResponse;
+}
+
+const { detail }: RecordWithData = Astro.props;
+
+const data = detail as IProductDetailResponse;
+---
+
+<div class={`flex flex-col gap-2 mb-4`}>
+  {
+    data?.presentation?.length > 0 && (
+      <div class={`flex gap-2 items-center`}>
+        <h3 class={`text-sm font-semibold`}>Precio por:</h3>{" "}
+        <span>{data.presentation}</span>
+      </div>
+    )
+  }
+
+  {
+    data?.performance?.length > 0 ? (
+      <div class={`flex gap-2 items-center`}>
+        <h3 class={`text-sm font-semibold`}>Rendimiento:</h3>
+        <span class={`text-sm font-light`}>{data.performance}</span>
+      </div>
+    ) : null
+  }
+  {
+    data?.weight ? (
+      <div class={`flex gap-2 items-center`}>
+        <h3 class={`text-sm font-semibold`}>Peso:</h3>
+        <span class={`text-sm font-light`}>{data.weight} Kg</span>
+      </div>
+    ) : null
+  }
+
+  <div class={`flex gap-2 items-center`}>
+    <h3 class={`text-sm font-semibold`}>Marca:</h3>{" "}
+    <span class={`text-sm font-light`}>{data.brandDetail.name}</span>
+  </div>
+  <div class={`flex gap-2 items-center`}>
+    <h3 class={`text-sm font-semibold`}>Modelo:</h3>{" "}
+    <span class={`text-sm font-light`}>{data.model}</span>
+  </div>
+  <div class={`flex gap-2 items-center`}>
+    <h3 class={`text-sm font-semibold`}>SKU:</h3>
+    <span class={`text-sm font-light`}>{data.code}</span>
+  </div>
+  {
+    data?.pdfDocument?.length > 0 && data?.pdfDocumentTitle?.length > 0 ? (
+      <div class={`flex gap-2 items-center`}>
+        <h3 class={`text-sm font-semibold`}>{data.pdfDocumentTitle}:</h3>
+        <a href={data.pdfDocument} target="_blank">
+          <span class={`text-base text-blue-900 font-semibold`}>Descargar</span>
+        </a>
+      </div>
+    ) : null
+  }
+
+  {
+    data?.useMode?.length > 0 ? (
+      <div>
+        <h3 class={`text-sm font-semibold`}>Modo de uso:</h3>
+        <div class={`text-sm font-light`} set:html={data.useMode} />
+      </div>
+    ) : null
+  }
+
+  {
+    data?.pdfDocument2?.length > 0 && data?.pdfDocumentTitle2?.length > 0 ? (
+      <div class={`flex gap-2 items-center`}>
+        <h3 class={`text-sm font-semibold`}>{data.pdfDocumentTitle2}:</h3>
+        <a href={data.pdfDocument2} target="_blank">
+          <span class={`text-base text-blue-900 font-semibold`}>Descargar</span>
+        </a>
+      </div>
+    ) : null
+  }
+</div>

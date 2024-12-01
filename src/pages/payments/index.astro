@@ -1,0 +1,265 @@
+---
+import Footer from "./../../components/shared/Footer.astro";
+import { configDataResponse, getColors } from "../../services";
+import { TOKEN_AUTH } from "../../config/constants";
+import type { IConfig } from "../../types/IConfig";
+import Navbar from "../../components/shared/Navbar.astro";
+import { ViewTransitions } from "astro:transitions";
+import FooterMenu from '../../components/shared/FooterMenu.astro';
+
+
+const cookies = Astro.cookies;
+const token = cookies.get(TOKEN_AUTH);
+
+const [config, colors]: [IConfig, any] = await Promise.all([
+  configDataResponse(),
+  getColors(),
+]);
+
+const data = { token: token?.value || null, config };
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Medios de materiales para construccion en seco"
+    />
+    <meta name="author" content="Vallejos Materiales" />
+    <meta
+      name="keywords"
+      content="Medios de pago, materiales, construccion, seco, vallejos, rosario, steel framing, durlock, placa cementicia, placa yeso, placa fibrocemento, placa cemento, placa fibrofacil, placa fenolico, placa osb, placa mdf, placa melamina, placa durlock, placa knauf, placa volcanita, placa fibrocemento, placa fibrofacil, placa fenolico, placa osb, placa mdf, placa melamina, placa durlock, placa knauf, placa volcanita, placa fibrocemento, placa fibrofacil, placa fenolico, placa osb, placa mdf, placa melamina, placa durlock, placa knauf, placa volcanita"
+    />
+    <meta name="google" content="notranslate" />
+    <title>Medios de pago - Vallejos Materiales</title>
+    <ViewTransitions />
+  </head>
+
+  <body>
+    <style>
+      body {
+        background-color: #00000;
+      }
+    </style>
+
+    <Navbar
+      {...{ data, token: token?.value, withSearch: true, isReduced: true }}
+    />
+
+     <div class="min-h-[70vh] max-w-[800px] mx-auto p-3">
+      <div class="flex justify-center mt-16">
+        <div class="rounded p-1">
+          <h2 class="text-3xl text-center font-bold text-gray-500">
+            Medios de pago
+          </h2>
+          <br />
+          <div class="flex flex-col gap-2">
+            <!-- Primer elemento: Cuotas con tarjetas de crédito -->
+            <div class="flex sm:flex-row flex-col gap-3 justify-center items-center">
+              <img
+                src="/images/cards/cuota.png"
+                alt="Tarjeta de crédito visa"
+                class="w-15 h-10"
+              />
+              <div class="border-l border-gray-300 h-full mx-4"></div>
+              <div class="flex flex-col">
+                <p class="text-lg font-bold text-gray-500">
+                  EN 3, 6 Y 12 CUOTAS FIJAS CON TARJETAS DE CRÉDITO
+                </p>
+                <span class="text-md text-gray-500">
+                  A PRECIO DE LISTA (no se hace el descuento por pago contado).
+                  Cada producto tiene precio de contado y de lista, en los
+                  presupuestos figuran los dos precios, contado y para crédito.
+                </span>
+              </div>
+            </div>
+
+            <hr class="my-4 border-t border-gray-200" />
+
+            <!-- Segundo elemento: Cuotas con tarjetas de crédito (Visa, American Express, Mastercard) -->
+            <div class="flex sm:flex-row flex-col gap-3 justify-center items-center">
+              <img
+                src="/images/cards/visa.svg"
+                alt="Tarjeta de crédito visa"
+                class="w-15 h-10"
+              />
+              <img
+                src="/images/cards/american.svg"
+                alt="Tarjeta de crédito American Express"
+                class="w-15 h-10"
+              />
+              <img
+                src="/images/cards/master.svg"
+                alt="Tarjeta de crédito Mastercard"
+                class="w-15 h-10"
+              />
+              <div class="border-l border-gray-300 h-full mx-4"></div>
+              <div class="flex flex-col">
+                <p class="text-lg font-bold text-gray-500">
+                  HASTA 12 CUOTAS FIJAS
+                </p>
+                <span class="text-md text-gray-500">
+                  Tarjetas de crédito Visa, Mastercard, Nativa, Cabal y AMEX
+                  bancarizadas A PRECIO DE LISTA (no se hace descuento por pago
+                  contado) cada producto tiene precio de contado y de lista, en
+                  los presupuestos figuran los dos precios contado y para crédito.
+                </span>
+              </div>
+            </div>
+
+            <hr class="my-4 border-t border-gray-200" />
+
+            <!-- Tercer elemento: Naranja X -->
+            <div class="flex sm:flex-row flex-col gap-3 justify-center items-center">
+              <img
+                src="/images/cards/naranja.svg"
+                alt="Tarjeta de crédito naranja"
+                class="w-40 h-20"
+              />
+              <div class="border-l border-gray-300 h-full mx-4"></div>
+              <div class="flex flex-col">
+                <p class="text-lg font-bold text-gray-500">
+                  EN 6 CUOTAS FIJAS CON NARANJA X
+                </p>
+                <span class="text-md text-gray-500">
+                  A PRECIO DE LISTA (no se hace el descuento por pago contado).
+                  Cada producto tiene precio de contado y de lista, en los
+                  presupuestos figuran los dos precios, contado y para crédito.
+                </span>
+              </div>
+            </div>
+
+            <hr class="my-4 border-t border-gray-200" />
+
+            <!-- Cuarto elemento: Tarjetas de débito -->
+            <div class="flex sm:flex-row flex-col gap-3 justify-center items-center">
+              <img
+                src="/images/cards/visa-debito.svg"
+                alt="Tarjeta de débito visa"
+                class="w-15 h-10"
+              />
+              <img
+                src="/images/cards/maestro.svg"
+                alt="Tarjeta de débito maestro"
+                class="w-15 h-10"
+              />
+              <img
+                src="/images/cards/cabal-debito.svg"
+                alt="Tarjeta de débito cabal"
+                class="w-15 h-10"
+              />
+              <div class="border-l border-gray-300 h-full mx-4"></div>
+              <div class="flex flex-col">
+                <p class="text-lg font-bold text-gray-500">
+                  TARJETAS DE DÉBITO
+                </p>
+                <span class="text-md text-gray-500">
+                  Tarjetas de crédito Visa, Mastercard y AMEX bancarizadas.
+                </span>
+              </div>
+            </div>
+
+            <hr class="my-4 border-t border-gray-200" />
+
+            <!-- Quinto elemento: Transferencia bancaria -->
+            <div class="flex sm:flex-row flex-col gap-3 justify-center items-center">
+              <img
+                src="/images/cards/banco.png"
+                alt="Tarjeta de débito visa"
+                class="w-15 h-10"
+              />
+              <div class="border-l border-gray-300 h-full mx-4"></div>
+              <div class="flex flex-col">
+                <p class="text-lg font-bold text-gray-500">
+                  TRANSFERENCIA BANCARIA
+                </p>
+                <span class="text-md text-gray-500">
+                  Banco: 191 - Credicoop - SUC: 141 - Concordia.
+                </span>
+                <span class="text-md text-gray-500"> Cuenta: 004450/5 </span>
+                <span class="text-md text-gray-500">
+                  Denominación: VALLEJOS CRISTIAN DAVID
+                </span>
+                <span class="text-md text-gray-500">
+                  CBU: 1910141755014100445050
+                </span>
+                <span class="text-md text-gray-500">
+                  Alias: VALLEJOSMATERIALES
+                </span>
+                <span class="text-md text-gray-500">
+                  No se aceptan pagos en efectivo.
+                </span>
+              </div>
+            </div>
+
+            <hr class="my-4 border-t border-gray-200" />
+
+            <!-- Sexto elemento: Pago en efectivo -->
+            <div class="flex sm:flex-row flex-col gap-3 justify-center items-center">
+              <img
+                src="/images/cards/efectivo.png"
+                alt="Pago en efectivo"
+                class="w-15 h-10"
+              />
+              <div class="border-l border-gray-300 h-full mx-4"></div>
+              <div class="flex flex-col">
+                <p class="text-lg font-bold text-gray-500">
+                  EFECTIVO
+                </p>
+                <span class="text-md text-gray-500">
+                  En sucursal o al recibir el pedido. En Concordia, puede hacer
+                  su compra y pagar en efectivo al recibir el pedido dentro de
+                  las 24 hs.
+                </span>
+              </div>
+            </div>
+
+            <hr class="my-4 border-t border-gray-200" />
+
+            <!-- Seguridad en pagos con tarjetas -->
+            <div class="flex items-center gap-4 p-4">
+              <div class="flex gap-3">
+                <div class="flex flex-col">
+                  <p class="text-lg font-bold text-gray-500">
+                    SEGURIDAD EN PAGOS CON TARJETAS
+                  </p>
+                  <span class="text-md text-gray-500">
+                    Los pagos con tarjetas requieren la validación de la
+                    identidad del titular de la tarjeta mediante SMS o código
+                    de autenticación enviado a la dirección de correo electrónico
+                    asociada a la cuenta.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-4 p-4">
+              <div class="flex gap-3">
+                <div class="flex flex-col">
+                  <p class="text-lg font-bold text-gray-500">
+                    INFORMAR UN PAGO
+                  </p>
+                  <span class="text-md text-gray-500">
+                    Para informar un pago por transferencia se debe enviar
+                    por WhatsApp el comprobante de pago y el Nº de Nota de
+                    Venta o Factura que se está abonando. La NOTA DE VENTA
+                    se descarga automáticamente en el dispositivo que se
+                    hizo la compra y LA FACTURA se envía al correo indicado
+                    al hacer la compra.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <Footer />
+    <FooterMenu />
+  </body>
+</html>

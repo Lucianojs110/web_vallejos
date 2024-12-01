@@ -1,0 +1,159 @@
+---
+import ProductDetailLayout from "../../../layouts/product-detail-layout.astro";
+import { mapProductDetail } from "../../../utils/mappers";
+import { formatCurrency } from "../../../utils/formatter";
+import { configDataResponse, getProduct, shipmentsResponse } from "../../../services";
+import { TOKEN_AUTH } from "../../../config/constants";
+import { ViewTransitions } from "astro:transitions";
+import FooterMenu from '../../../components/shared/FooterMenu.astro';
+
+const slug = Astro.params.slug as string;
+
+const [apiResponse, config, shipments] = await Promise.all([
+  getProduct(slug),
+  configDataResponse(),
+  shipmentsResponse()
+]);
+
+const cookies = Astro.cookies;
+const token = cookies.get(TOKEN_AUTH);
+
+const data = mapProductDetail(apiResponse);
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// recuperar el array de ultimos vistos de la cookie 'lastViewed'
+// const lastViewed = (cookies.get('lastViewed') || []) as Array<string>;
+// almacenar en la cookie de ultimos vistos, el codigo de este producto, junto con los anteriores si es que existe la cookie
+// data.code && cookies.set('lastViewed', JSON.stringify(lastViewed.unshift(data.code)), { path: '/' });
+
+const schema = {
+      "@context": "https://schema.org/",
+      "@type": "Product",
+      "sku": data.code,
+      "image": [data.mainImage, ...data.images],
+      "name": data.name,
+      "description": `${
+        data.descriptionTwo
+      }. ${data.descriptionFour}`,
+      "brand": {
+        "@type": "Brand",
+        "name": data?.brandDetail?.name || ''
+      },
+      "offers": {
+        "@type": "Offer",
+        "url": "https://www.example.com/trinket_offer",
+        "itemCondition": "https://schema.org/NewCondition",
+        "availability": "https://schema.org/InStock",
+        "price": data.priceWithIvaAndDiscount,
+        "priceCurrency": "ARS",
+        "priceValidUntil": new Date().toISOString().split('T')[0],
+        "shippingDetails": {
+          "@type": "OfferShippingDetails",
+          "shippingRate": {
+            "@type": "MonetaryAmount",
+            "value": 0,
+            "currency": "ARS"
+          },
+          "shippingDestination": {
+            "@type": "DefinedRegion",
+            "addressCountry": "ARG"
+          },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 0,
+              "maxValue": 1,
+              "unitCode": "DAY"
+            },
+            "transitTime": {
+              "@type": "QuantitativeValue",
+              "minValue": 1,
+              "maxValue": 5,
+              "unitCode": "DAY"
+            }
+          }
+        },
+        "hasMerchantReturnPolicy": {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "ARG",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+          "merchantReturnDays": 60,
+          "returnMethod": "https://schema.org/ReturnByMail",
+          "returnFees": "https://schema.org/FreeReturn"
+        }
+      },
+    }
+
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+    
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content={`${formatCurrency(data.priceWithIvaAndDiscount)} ${
+        data.descriptionTwo
+      }. ${data.descriptionFour}`}
+    />
+    <meta name="author" content="Vallejos Materiales" />
+    <meta
+      name="keywords"
+      content={"Concordia " +
+        data.name +
+        " " +
+        data.descriptionTwo +
+        " " +
+        data.descriptionThree +
+        " " +
+        data.descriptionFour}
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="google" content="notranslate" />
+    <meta name="image" content={data.mainImage} />
+    <meta property="og:title" content={data.name} />
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:url"
+      content={`https://vallejosmateriales.com.ar/catalogo/${slug}`}
+    />
+    <meta property="og:image" itemprop="image" content={data.mainImage} />
+    <meta
+      property="og:description"
+      content={`${formatCurrency(data.priceWithIvaAndDiscount)} ${
+        data.descriptionTwo
+      }. ${data.descriptionFour}`}
+    />
+    <link rel="icon" type="image/x-icon" href={data.mainImage} />
+    <title>Vallejos Materiales{" - " + data.name}</title>
+    <ViewTransitions />
+  </head>
+  <body>
+    <style>
+      body {
+        background-color: #ebebeb;
+      }
+    </style>
+    <link itemprop="thumbnailUrl" href={data.mainImage} />
+    <span
+      itemprop="thumbnail"
+      itemscope
+      itemtype="http://schema.org/ImageObject"
+    >
+      <link itemprop="url" href={data.mainImage} />
+    </span>
+   
+    <ProductDetailLayout {...{detail: data, config, token: token?.value, shipments}}   class="w-full !max-w-full"/>
+    
+  </body>
+  <FooterMenu />
+</html>

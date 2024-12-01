@@ -1,0 +1,58 @@
+---
+import Footer from "./../../components/shared/Footer.astro";
+import { configDataResponse, getColors } from "../../services";
+import { TOKEN_AUTH } from "../../config/constants";
+import type { IConfig } from "../../types/IConfig";
+import Navbar from "../../components/shared/Navbar.astro";
+import { ViewTransitions } from "astro:transitions";
+import FooterMenu from '../../components/shared/FooterMenu.astro';
+
+import CalculatorLayout from "../../islands/Calculator/CalculatorLayout";
+
+
+const cookies = Astro.cookies;
+const token = cookies.get(TOKEN_AUTH);
+
+const [ config, colors ] : [IConfig, any]= await Promise.all([configDataResponse(), getColors()]);
+
+const data = { token: token?.value || null, config };
+
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Calculadora de materiales para construccion en seco" />
+    <meta name="author" content="Vallejos Materiales" />
+    <meta name="keywords" content="Calculadora, materiales, construccion, seco, vallejos, rosario, steel framing, durlock, placa cementicia, placa yeso, placa fibrocemento, placa cemento, placa fibrofacil, placa fenolico, placa osb, placa mdf, placa melamina, placa durlock, placa knauf, placa volcanita, placa fibrocemento, placa fibrofacil, placa fenolico, placa osb, placa mdf, placa melamina, placa durlock, placa knauf, placa volcanita, placa fibrocemento, placa fibrofacil, placa fenolico, placa osb, placa mdf, placa melamina, placa durlock, placa knauf, placa volcanita, placa fibrocemento, placa fibrofacil, placa fenolico, placa osb, placa mdf, placa melamina, placa durlock, placa knauf, placa volcanita, placa fibrocemento, placa fibrofacil, placa fenolico, placa osb, placa mdf, placa melamina, placa durlock, placa knauf, placa volcanita, placa fibrocemento, placa fibrofacil, placa fenolico, placa osb, placa mdf, placa melamina, placa durlock, placa knauf, placa volcanita" />
+    <meta name="google" content="notranslate" />
+
+    <title>Calculadora - Vallejos Materiales</title>
+    <ViewTransitions />
+  </head>
+
+  <body>
+    <style>
+      body {
+        background-color: #ebebeb;
+      }
+    </style>
+
+    <Navbar {...{data, token: token?.value, withSearch: true, isReduced: true}} />
+
+    <div class="min-h-[70vh]">
+      <div class="flex justify-center mt-16 pt-4">
+        <CalculatorLayout colors={colors} client:load/>
+      </div>
+    </div>
+    
+   
+    <Footer data={config} />
+    <FooterMenu />
+  </body>
+
+
+</html>

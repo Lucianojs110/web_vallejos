@@ -1,0 +1,42 @@
+---
+import { data } from "autoprefixer";
+import { TOKEN_AUTH } from "../config/constants";
+import HomeLayout from "../layouts/home-layout.astro";
+import { configDataResponse } from "../services";
+import type { IConfig } from "../types/IConfig";
+
+const config : IConfig = await configDataResponse();
+
+const cookies = Astro.cookies;
+const token = cookies.get(TOKEN_AUTH);
+
+const banners = [
+    {
+        title: "Banner 1",
+        description: "Descripcion del banner 1",
+        image: "https://cdn.vallejosmateriales.com.ar/120/webp/images/placeholder.png",
+        link: "/",
+    },
+    {
+        title: "Banner 2",
+        description: "Descripcion del banner 2",
+        image: "https://cdn.vallejosmateriales.com.ar/120/webp/images/placeholder.png",
+        link: "/",
+    },
+    {
+        title: "Banner 3",
+        description: "Descripcion del banner 3",
+        image: "https://cdn.vallejosmateriales.com.ar/120/webp/images/placeholder.png",
+        link: "/",
+    },
+    {
+        title: "Banner 4",
+        description: "Descripcion del banner 4",
+        image: "https://cdn.vallejosmateriales.com.ar/120/webp/images/placeholder.png",
+        link: "/",
+    },
+]
+
+---
+
+<HomeLayout {...{data, config, token: token?.value, banners: banners}} />

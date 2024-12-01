@@ -1,0 +1,13 @@
+---
+const { image } = Astro.props;
+---
+
+<img
+  id="image-preview"
+  class={`w-full max-w-[320px] min-h-[320px] md:max-w-2xl object-cover brightness-90`}
+  src={image}
+  alt="Imagen del producto"
+  width="320" height="320"
+
+  transition:name={image}
+/>

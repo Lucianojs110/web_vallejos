@@ -1,0 +1,16 @@
+---
+import type { IProductCatalogResponse } from "../../types/ICatalog";
+import ProductCard from "./ProductCard.astro";
+
+interface RecordWithData extends Record<string, any> {
+  data?: IProductCatalogResponse[];
+}
+
+const { data }: RecordWithData = Astro.props;
+
+const products = data as IProductCatalogResponse[];
+---
+
+<div class="grid grid-cols-2 gap-2 sm:gap-4 sm:grid-cols-3 lg:grid-cols-4">
+  {products.map((product) => <ProductCard data={product} />)}
+</div>

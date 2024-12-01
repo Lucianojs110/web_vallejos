@@ -1,0 +1,23 @@
+---
+import type { INavigationMenu } from "../../types/ICatalog";
+import NavigationMenuElement from "./NavigationMenuElement.astro";
+
+interface RecordWithData extends Record<string, any> {
+  menu?: INavigationMenu;
+  line?: string;
+  search?: string;
+}
+
+const { menu, line, search }: RecordWithData = Astro.props;
+---
+
+{
+  menu && menu.elements && (
+    <div class={`flex flex-col gap-4`}>
+      <div class={`text-lg font-semibold`}>{menu.count} resultados</div>
+      {menu.elements.map((element) => (
+        <NavigationMenuElement element={element} line={line} search={search} />
+      ))}
+    </div>
+  )
+}

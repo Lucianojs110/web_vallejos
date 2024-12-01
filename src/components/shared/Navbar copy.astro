@@ -1,0 +1,130 @@
+---
+// Importaciones necesarias
+import type { IDataCatalog } from "../../types/ICatalog";
+import CartList from "../../islands/CartList";
+import Icon from "astro-icon";
+import UserButton from "../../islands/UserButton";
+import ModalCart from "../../islands/cart/ModalCart";
+import { getAllGroups } from "../../services";
+const groups = await getAllGroups();
+
+interface RecordWithData extends Record<string, any> {
+  data?: IDataCatalog;
+}
+
+const {
+  data,
+  token,
+  withSearch,
+  isReduced = false,
+}: RecordWithData = Astro.props;
+---
+
+<div class="flex flex-col w-full">
+  <!-- Navbar -->
+  <div class="fixed z-20 w-full flex flex-row justify-between items-center p-2 top-0 bg-white shadow-md md:hidden">
+    <div class="flex items-center">
+      <button class="p-2" onclick="toggleMenu()">
+        <Icon name="mdi:menu" class="text-orange-500 w-8 h-8" />
+      </button>
+    </div>
+    <a href="/" class="flex items-center justify-center">
+      <img src="/images/Logo.png" alt="logo" width="120" height="44" />
+    </a>
+
+    <div class="flex items-center relative">
+      <button class="p-2 search-icon" onclick="toggleSearch()">
+        <Icon name="mdi:magnify" class="text-orange-500 w-8 h-8" />
+      </button>
+
+      <form
+        action="/catalogo"
+        id="mobile-search-form"
+        class="hidden absolute right-0 top-full mt-1 w-48 bg-gray-100 p-2 rounded-md shadow-md flex items-center"
+      >
+        <input
+          type="text"
+          name="search"
+          value={data?.search || ""}
+          placeholder="Buscar"
+          class="border-2 border-gray-300 rounded-md p-2 w-full pl-2 text-gray-700"
+        />
+        <button
+          type="submit"
+          class="p-2 bg-gray-400 hover:bg-gray-500 rounded w-10 h-10 flex items-center justify-center ml-2"
+          title="Buscar"
+        >
+          <Icon name="mdi:magnify" class="text-white w-5 h-5" />
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Menú Móvil (se despliega debajo del navbar) -->
+  <div
+    id="mobile-menu"
+    class="hidden w-full bg-white shadow-md transition-all duration-500 ease-in-out overflow-hidden"
+    style="position: absolute; top: 60px; z-index: 20; width: 100%;"
+  >
+    <ul class="flex justify-around items-center space-x-4 p-4">
+      <li class="text-black font-semibold text-sm cursor-pointer">
+        <a href="/payments">MEDIOS DE PAGO</a>
+      </li>
+      <li class="text-black font-semibold text-sm cursor-pointer">
+        <a href="/shipments">SOBRE ENVÍOS</a>
+      </li>
+      <li class="text-black font-semibold text-sm cursor-pointer">
+        <a href="/enlace6">INFORMACIÓN</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Contenido principal -->
+  <main id="main-content" class="w-full mt-0 transition-all duration-500 ease-in-out">
+    <CartList client:load />
+  </main>
+
+  <script>
+  window.onload = function () {
+  // Función para alternar el menú
+  window.toggleMenu = function () {
+    const menu = document.getElementById("mobile-menu");
+    const mainContent = document.querySelector("main"); // Elemento principal que se desplaza
+
+    if (menu.classList.contains("hidden")) {
+      menu.classList.remove("hidden");
+
+      // Calcular la altura real del contenido del menú
+      const menuHeight = menu.scrollHeight; // Altura del contenido del menú
+
+      // Establecer la altura dinámica del menú
+      setTimeout(() => {
+        menu.style.maxHeight = `${menuHeight}px`; // Ajusta el max-height
+        mainContent.style.marginTop = `${menuHeight}px`; // Ajusta el contenido principal
+      }, 10);
+    } else {
+      // Revertir los cambios
+      menu.style.maxHeight = "0"; // Contrae el menú
+      mainContent.style.marginTop = "0"; // Restablece el margen superior
+      setTimeout(() => menu.classList.add("hidden"), 500); // Esconde el menú después de la animación
+    }
+  };
+
+  // Función para alternar la búsqueda
+  window.toggleSearch = function () {
+    const searchForm = document.getElementById("mobile-search-form");
+    searchForm.classList.toggle("hidden");
+    if (!searchForm.classList.contains("hidden")) {
+      searchForm.querySelector("input").focus();
+    }
+  };
+};
+
+  </script>
+
+  <style>
+    #mobile-search-form:not(.hidden) {
+      transform: scaleX(1); /* Escala horizontal completa */
+    }
+  </style>
+</div>

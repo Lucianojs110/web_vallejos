@@ -1,0 +1,105 @@
+---
+import { formatCurrency } from "./../../utils/formatter";
+import type { IProductDetailResponse } from "./../../types/IProducDetail";
+
+interface RecordWithData extends Record<string, any> {
+  data?: IProductDetailResponse;
+  config?: any;
+}
+
+const { data, config }: RecordWithData = Astro.props;
+---
+
+<div class={`mt-4 border rounded p-1`}>
+  <div class={`flex flex-col gap-2`}>
+    <div class={`flex flex-col gap-2`}>
+      <div
+        class={`flex flex-col px-1 py-1 text-gray-700 font-semibold text-sm mt-1`}
+      >
+        <div class={`text-base text-left w-full pb-2 text-xl`}>
+          <h1 transition:name={data?.name || ""}>{data?.name}</h1>
+        </div>
+        
+
+        <div>
+          <p
+            class={`inline-block  rounded-b-none text-2xl font-semibold text-green-800`}
+            transition:name={`${data?.code || ""}-priceWithIvaAndDiscount${data?.priceWithIvaAndDiscount || 0}`}
+          >
+            {formatCurrency(data?.priceWithIvaAndDiscount || 0)}
+          </p>
+        </div>
+
+
+        {
+          data?.benefitPercentDiscount ? ( 
+            <div class={`flex gap-2  text-md items-center`}>
+              <p
+                class={`inline-block  rounded-b-nonefont-semibold text-gray-600`}
+              >
+              Antes
+                <del
+                  transition:name={`${data?.code || ""}-percentDiscount${data?.priceDifferenceWithIvaAndDiscount || 0}`}
+                >
+                  {" "}
+                {formatCurrency(data?.priceDifferenceWithIvaAndDiscount || 0)}
+                </del>
+              </p>
+              <div class={`bg-green-600 text-white p-1 rounded-full`}>
+                {data?.benefitPercentDiscount}% OFF
+              </div>
+              
+            </div>
+          ) : null
+        } 
+
+        <div>
+          <p class={`inline-block text-xs px-1 font-semibold text-gray-700 `}>
+            Contado / Transferencia / En 1 pago
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <p>¡Nuestras promociones bancarias!</p>
+      </div>
+      <div>
+        <div>
+          <p class={`inline-block  rounded-b-none text text-gray-700`}>
+            <b>Ahora 3</b> cuotas fijas de {
+              formatCurrency(
+                ((data?.priceWithIva || 0) *
+                  ((100 - config?.trescuotas) / 100)) /
+                  3
+              )
+            }
+          </p>
+        </div>
+
+        <div>
+          <p class={`inline-block  rounded-b-none text text-gray-700`}>
+            <b>Ahora 6</b> cuotas fijas de {
+              formatCurrency(
+                ((data?.priceWithIva || 0) *
+                  ((100 - config?.seiscuotas) / 100)) /
+                  6
+              )
+            }
+          </p>
+        </div>
+
+        <div>
+          <p class={`inline-block  rounded-b-none text text-gray-700`}>
+            <b>Ahora 12</b> cuotas fijas de {
+              formatCurrency(
+                ((data?.priceWithIva || 0) *
+                  ((100 - config?.docecuotas) / 100)) /
+                  12
+              )
+            }
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

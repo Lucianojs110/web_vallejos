@@ -1,0 +1,167 @@
+---
+
+import Navbar from "./../components/shared/Navbar.astro";
+import Footer from "./../components/shared/Footer.astro";
+import SideNavigatorBar from "./../components/Catalog/SideNavigatorBar.astro";
+import BreadCrumb from "./../components/shared/BreadCrumb.astro";
+import ListCards from "./../components/Catalog/ListCards.astro";
+
+import ContentFiltersAndSortButtons from "./../islands/ContentFiltersAndSortButtons";
+import SortBySelectors from "./../islands/SortBySelectors";
+import Pagination from "./../islands/Pagination";
+import ModalCart from "../islands/cart/ModalCart";
+import { shipmentsResponse } from "../services";
+import InformationRibbon from "../islands/InformationRibbon";
+import PreFooter from "../components/shared/PreFooter.astro";
+
+import { ViewTransitions } from "astro:transitions";
+import type { relative } from "path";
+
+const shipments = await shipmentsResponse();
+
+const { data, config, token } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Materiales para construccion en seco" />
+    <meta name="author" content="Vallejos Materiales" />
+    <meta
+      name="keywords"
+      content="Materiales de construccion en seco placas de yeso durlock en Concordia, Entre Rios, Argentina"
+    />
+    
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="google" content="notranslate" />
+    <meta
+      name="image"
+      content="https://cdn.vallejosmateriales.com.ar/120/webp/images/placeholder.png"
+    />
+    <meta property="og:title" content="Vallejos Materiales" />
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:url"
+      content="https://test.vallejosmateriales.com.ar/"
+    />
+    <meta
+      property="og:image"
+      itemprop="image"
+      content="https://cdn.vallejosmateriales.com.ar/120/webp/images/placeholder.png"
+    />
+    <meta
+      property="og:description"
+      content="Materiales para construccion en seco"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://cdn.vallejosmateriales.com.ar/120/webp/images/placeholder.png"
+    />
+    <title>Vallejos Materiales</title>
+
+    <ViewTransitions />
+
+    </head>
+
+<body>
+    <style>
+      body {
+        background-color: #fafafa;
+      }
+    </style>
+
+    <link
+      itemprop="thumbnailUrl"
+      href="https://test.vallejosmateriales.com.ar/images/logo.svg"
+    />
+    <span
+      itemprop="thumbnail"
+      itemscope
+      itemtype="http://schema.org/ImageObject"
+    >
+      <link
+        itemprop="url"
+        href="https://vallejosmateriales.com.ar/img/logo.png"
+      />
+    </span>
+
+
+
+
+<Navbar {...{data, token, withSearch: true}} />
+<div
+  class="flex gap-2 items-center justify-center flex-col w-full xl:w-5/6 mx-auto text-lg mt-20"
+  id="main"
+>
+
+
+
+{
+  data?.results && (
+    <div class="w-full p-2">
+      <BreadCrumb data={data} class="text-2xl font-semibold"/>
+      </div>
+      )
+    }
+
+
+  {
+    data?.results?.products?.length ? (
+      <>
+        <ContentFiltersAndSortButtons client:load data={data} />
+
+        <SortBySelectors
+          search={data.search}
+          pathname={data.pathname}
+          sortby={data.sortby}
+          client:load
+        />
+
+        <div class="flex gap-12">
+          <div class="md:block hidden" style={{ minWidth: "200px" }}>
+            <SideNavigatorBar
+              menu={data.results.menu}
+              line={data.line}
+              search={data.search}
+            />
+          </div>
+          <div>
+            <ListCards data={data.results.products} />
+            <Pagination
+              currentPage={data.page}
+              totalPages={data.results.totalPages}
+              search={data.search}
+              pathname={data.pathname}
+              client:load
+            />
+          </div>
+        </div>
+      </>
+    ) : (
+      <div>Sin resultados</div>
+    )
+  }
+</div>
+
+<div class="mt-4"></div>
+
+<ModalCart client:only relative={false}/>
+
+
+
+<Footer data={config}/>
+
+</body>
+
+</html>

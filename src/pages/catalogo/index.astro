@@ -1,0 +1,38 @@
+---
+import { TOKEN_AUTH } from "../../config/constants";
+import { configDataResponse, getProducts } from "../../services";
+import type { ICatalogResponse } from "../../types/ICatalog";
+import type { IConfig } from "../../types/IConfig";
+import CatalogoLayout from "./../../layouts/catalog-layout.astro";
+import FooterMenu from '../../components/shared/FooterMenu.astro';
+
+
+const pathname = Astro.url.pathname;
+const search = Astro.url.searchParams.get("search") || "";
+const pageParam = Astro.url.searchParams.get("page") || "1";
+const page = parseInt(pageParam, 10);
+const sortparam = Astro.url.searchParams.get("sortby") || "priority-desc";
+const sortBy = sortparam.split("-")[0];
+const sortOrder = sortparam.split("-")[1];
+
+const filter = [{ published: true }, { status: "active" }];
+const [ results, config ] : [ICatalogResponse, IConfig]= await Promise.all([getProducts(filter, sortBy, sortOrder, page, search), configDataResponse()]);
+
+const cookies = Astro.cookies;
+const token = cookies.get(TOKEN_AUTH);
+
+const data = {
+  results,
+  search,
+  page,
+  pathname,
+  line: "",
+  subline: "",
+  sortby: sortparam
+};
+
+---
+
+<CatalogoLayout  {...{data, config, token: token?.value}} />
+
+<FooterMenu />

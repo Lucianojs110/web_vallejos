@@ -1,0 +1,169 @@
+---
+import type { IProductDetailResponse } from "./../types/IProducDetail";
+import GalleryImages from "./../islands/GalleryImages";
+import ButtonAddToCart from "./../islands/ButtonAddToCart";
+
+import Navbar from "./../components/shared/Navbar.astro";
+import Footer from "./../components/shared/Footer.astro";
+
+import DeliveryMethod from "../components/ProductDetail/DeliveryMethod.astro";
+import PaymentMethod from "../components/ProductDetail/PaymentMethod.astro";
+import PricesComponent from "../components/ProductDetail/PricesComponent.astro";
+import DescriptionTwoAndFour from "../components/ProductDetail/DescriptionTwoAndFour.astro";
+import FeaturesComponent from "../components/ProductDetail/FeaturesComponent.astro";
+import ImagePreview from "../components/ProductDetail/ImagePreview.astro";
+import VideoComponent from "../components/ProductDetail/VideoComponent.astro";
+import RelatedProduct from "../components/ProductDetail/RelatedProduct.astro";
+import ModalCart from "../islands/cart/ModalCart";
+
+import ProductTabs from "../islands/ProductTabs";
+import ProductCard from "../components/Catalog/ProductCard.astro";
+
+interface RecordWithData extends Record<string, any> {
+  detail?: IProductDetailResponse;
+}
+
+const { detail, config, token, shipments }: RecordWithData = Astro.props;
+
+const data = detail as IProductDetailResponse;
+const descripcion = data.descriptionTwo;
+const presentation = data.presentation;
+const performance = data.performance;
+const brand = data.brandDetail.name;
+const model = data.model;
+const code = data.code;
+
+const pdfDocument = data.pdfDocument;
+const pdfDocumentTitle = data.pdfDocumentTitle;
+const useMode = data.useMode;
+const pdfDocument2 = data.pdfDocument2;
+const pdfDocumentTitle2 = data.pdfDocumentTitle2;
+const detailText1 = data.detailText1;
+const detailText2 = data.detailText2;
+const modoUso = "";
+
+---
+
+<Navbar data={null} token={token} withSearch={true} />
+
+<div
+  class={`flex gap-2 flex-col w-full mx-auto  bg-white font-sans md:pl-12 md:pr-12`}
+  id="main"
+>
+  <div class={`mt-20`}></div>
+
+  {/* breadcrumb inicio and line */}
+  <div class={`flex px-4 flex-col md:flex-row w-full`}>
+    <div class={`flex gap-2 items-center`}>
+      <a href="/" class={`text-blue-950 hover:text-gray-700`}> Inicio</a>
+      {
+        data.lineDetail != null && (
+          <>
+            <span class={`text-gray-500`}>/</span>
+            <a
+              href={`/${data.lineDetail.slug}`}
+              class={`text-blue-950 hover:text-gray-700`}
+            >
+              {data.lineDetail.nombre}
+            </a>
+          </>
+        )
+      }
+    </div>
+  </div>
+
+  <div class={`bg-white p-4 w-full`}>
+    <div
+      class={`flex flex-col md:flex-row-reverse items-center md:items-start gap-2 w-full`}
+    >
+      <div class={`md:block flex-[0.8] h-full  top-20 w-full`}>
+        <PricesComponent data={data} config={config} />
+        <br />
+        <PaymentMethod />
+        <DeliveryMethod shipments={shipments} />
+      
+          <ButtonAddToCart
+            product={{
+              id: data.id,
+              name: data.name,
+              slug: data.slug,
+              quantity: 1,
+              mainImage: data.mainImage,
+              priceWithIvaAndDiscount: data.priceWithIvaAndDiscount,
+              priceWithIva: data.priceWithIva,
+              code: data.code,
+              stock: data.stock,
+              acopio: 0,
+              weight: data.weight,
+            }}
+            client:load
+          />
+        
+      </div>
+
+      <div class={`bg-white flex-1  md:top-40`}>
+        <ImagePreview image={data.mainImage} />
+      </div>
+      {
+        data?.mainImage && data?.images?.length > 0 ? (
+          <div class={`bg-white   md:top-40`}>
+            <GalleryImages
+              images={[data.mainImage].concat(data.images)}
+              client:visible
+            />
+          </div>
+        ) : null
+      }
+    </div>
+
+   
+
+    <!-- Tab -->
+
+    <!-- Tab -->
+    <div
+    class="!text-base mt-2 text-left flex-1 w-full flex flex-col items-center justify-center md:min-h-[320px] max-w-[700px] mx-auto"
+  >
+<div class="w-full max-w-full overflow-x-auto">
+        <ProductTabs
+          descripcion={descripcion}
+          modoUso={modoUso}
+          presentation={presentation}
+          performance={performance}
+          brand={brand}
+          model={model}
+          code={code}
+          pdfDocument={pdfDocument}
+          pdfDocumentTitle={pdfDocumentTitle}
+          useMode={useMode}
+          pdfDocument2={pdfDocument2}
+          pdfDocumentTitle2={pdfDocumentTitle2}
+          detailText1={detailText1}
+          detailText2={detailText2}
+          client:load
+        />
+      </div>
+
+      {
+        data?.video?.length && data.video.length > 0 ? (
+          <div class="my-3 w-full">
+            <VideoComponent url={data.video} />
+          </div>
+        ) : null
+      }
+
+      <div class={`my-3`}>
+        <div set:html={data.detailText3} />
+      </div>
+    </div>
+
+    
+      <RelatedProduct detail={data} />
+   
+
+  </div>
+</div>
+
+<ModalCart client:only relative={false} />
+
+<Footer data={config} />

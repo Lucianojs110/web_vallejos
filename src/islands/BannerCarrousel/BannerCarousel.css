@@ -1,0 +1,46 @@
+
+  
+  /* Flechas personalizadas */
+  .custom-next,
+  .custom-prev {
+    position: absolute;
+    top: 50%; /* Centra verticalmente */
+    transform: translateY(-50%); /* Ajusta para centrar correctamente */
+    font-size: 24px; /* Tamaño de la flecha */
+    color: white; /* Color de la flecha */
+    cursor: pointer; /* Cambia el cursor al pasar el mouse */
+    z-index: 10; /* Asegúrate de que las flechas estén por encima */
+  }
+  
+  .custom-next {
+    right: 10px; /* Espaciado desde la derecha */
+  }
+  
+  .custom-prev {
+    left: 10px; /* Espaciado desde la izquierda */
+  }
+  
+  /* Opcional: Cambiar el color en hover */
+  .custom-next:hover,
+  .custom-prev:hover {
+    color: #f0f0f0; /* Cambia el color al pasar el mouse */
+  }
+  
+  .carousel-container {
+    width: 100%;
+    height: 100%; /* Usa 100vh o ajusta según tus necesidades */
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .carousel-container .swiper {
+    height: 100%; /* El Swiper ocupa todo el alto del contenedor */
+  }
+  
+  .carousel-container .swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%; /* Cada slide ocupa el 100% del alto del Swiper */
+  }
+  

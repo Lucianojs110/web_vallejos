@@ -1,0 +1,20 @@
+---
+import type { IFaq } from "../../types/IFaqs";
+
+interface RecordWithData extends Record<string, any> {
+  faqs?: IFaq[];
+}
+
+const { faqs }: RecordWithData = Astro.props;
+---
+
+<div class={`w-full`}>
+  {
+    faqs?.map((faq) => (
+      <div class={`flex flex-col gap-4`}>
+        <div class={`text-2xl font-bold`}>{faq.question}</div>
+        <div class={`text-lg font-light`}>{faq.answer}</div>
+      </div>
+    ))
+  }
+</div>

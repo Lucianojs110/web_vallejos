@@ -1,0 +1,166 @@
+---
+import Navbar from "../components/shared/Navbar.astro";
+import Footer from "../components/shared/Footer.astro";
+
+import ModalCart from "../islands/cart/ModalCart";
+import { shipmentsResponse } from "../services";
+
+import BannerCarousel from "../components/shared/BannerCarousel.astro";
+
+import { ViewTransitions } from "astro:transitions";
+import Groups from "../components/shared/Groups.astro";
+import FeaturedProductsPage1 from "../components/shared/FeaturedProductsPage1.astro";
+import FeaturedProductsPage2 from "../components/shared/FeaturedProductsPage2.astro";
+import BrandCarousel from "../components/shared/BrandCarousel.astro";
+import FooterMenu from "../components/shared/FooterMenu.astro";
+
+const shipments = await shipmentsResponse();
+
+const { data, config, token, banners } = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Materiales para construccion en seco" />
+    <meta name="author" content="Vallejos Materiales" />
+    <meta
+      name="keywords"
+      content="Materiales de construccion en seco placas de yeso durlock en Concordia, Entre Rios, Argentina"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="google" content="notranslate" />
+    <meta
+      name="image"
+      content="https://cdn.vallejosmateriales.com.ar/120/webp/images/placeholder.png"
+    />
+    <meta property="og:title" content="Vallejos Materiales" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://test.vallejosmateriales.com.ar/" />
+    <meta
+      property="og:image"
+      itemprop="image"
+      content="https://cdn.vallejosmateriales.com.ar/120/webp/images/placeholder.png"
+    />
+    <meta
+      property="og:description"
+      content="Materiales para construccion en seco"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://cdn.vallejosmateriales.com.ar/120/webp/images/placeholder.png"
+    />
+    <title>Vallejos Materiales</title>
+
+    <ViewTransitions />
+  </head>
+
+  <body>
+    <style>
+      body {
+        background-color: #fafafa;
+      }
+
+      /* Mostrar solo en móviles */
+      @media (max-width: 767px) {
+        .bannerCalculadora {
+          display: none;
+        }
+        .bannerCalculadoraMovil {
+          display: block;
+        }
+      }
+
+      /* Mostrar solo en escritorio */
+      @media (min-width: 768px) {
+        .bannerCalculadora {
+          display: block;
+        }
+        .bannerCalculadoraMovil {
+          display: none;
+        }
+      }
+
+      @keyframes slideInFromLeft {
+        0% {
+          transform: translateX(-100%);
+          opacity: 0;
+        }
+        100% {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .animate-slide-left {
+        animation: slideInFromLeft 0.8s ease-out forwards; /* Duración de la animación */
+      }
+    </style>
+
+    <link
+      itemprop="thumbnailUrl"
+      href="https://test.vallejosmateriales.com.ar/images/logo.svg"
+    />
+    <span
+      itemprop="thumbnail"
+      itemscope
+      itemtype="http://schema.org/ImageObject"
+    >
+      <link
+        itemprop="url"
+        href="https://vallejosmateriales.com.ar/img/logo.png"
+      />
+    </span>
+
+    <Navbar {...{ data, token, withSearch: true }} />
+    <div id="main">
+      <BannerCarousel />
+    </div>
+
+    <div class="hidden md:block">
+      <ModalCart client:only relative={false} />
+    </div>
+
+    <Groups />
+
+    <FeaturedProductsPage1 />
+
+    <!-- Banner calculadora visible solo en escritorio -->
+    <a href="/calculadora">
+      <img
+        src="/images/bannerCalculadora.png"
+        alt="Banner Calculadora"
+        class="full-width-banner mt-4 bannerCalculadora"
+      />
+    </a>
+
+    <!-- Banner calculadora visible solo en móvil -->
+    <a href="/calculadora">
+      <img
+        src="/images/bannerCalculadoraMovil.png"
+        alt="Banner Calculadora"
+        class="full-width-banner mt-4 bannerCalculadoraMovil"
+      />
+    </a>
+
+    <FeaturedProductsPage2 />
+
+    <BrandCarousel />
+
+    <Footer data={config} />
+
+    <FooterMenu />
+  </body>
+</html>

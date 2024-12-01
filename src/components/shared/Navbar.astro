@@ -1,0 +1,304 @@
+---
+// Importaciones necesarias
+import type { IDataCatalog } from "../../types/ICatalog";
+import CartList from "../../islands/CartList";
+import Icon from "astro-icon";
+import UserButton from "../../islands/UserButton";
+import ModalCart from "../../islands/cart/ModalCart";
+import { getAllGroups } from "../../services";
+const groups = await getAllGroups();
+
+interface RecordWithData extends Record<string, any> {
+  data?: IDataCatalog;
+}
+
+const {
+  data,
+  token,
+  withSearch,
+  isReduced = false,
+}: RecordWithData = Astro.props;
+---
+
+<div class="flex flex-col w-full">
+  <div
+    class="fixed z-20 w-full flex flex-row justify-between items-center p-2 top-0 bg-white shadow-md md:hidden"
+  >
+    <div class="flex items-center">
+      <button class="p-2" onclick="toggleMenu()">
+        <Icon name="mdi:menu" class="text-orange-500 w-8 h-8" />
+      </button>
+    </div>
+    <a href="/" class="flex items-center justify-center">
+      <img src="/images/Logo.png" alt="logo" width="120" height="44" />
+    </a>
+
+    <div class="flex items-center relative">
+      <button class="p-2 search-icon" onclick="toggleSearch()">
+        <Icon
+          id="search-icon"
+          name="mdi:magnify"
+          class="text-orange-500 w-8 h-8"
+        />
+        <!-- Ícono de "X" oculto por defecto -->
+        <Icon
+          id="close-icon"
+          name="mdi:close"
+          class="text-orange-500 w-8 h-8 hidden"
+        />
+      </button>
+
+      <form
+        action="/catalogo"
+        id="mobile-search-form"
+        class="hidden absolute right-0 top-full mt-1 w-48 bg-gray-100 p-2 rounded-md shadow-md flex items-center"
+      >
+        <input
+          type="text"
+          name="search"
+          value={data?.search || ""}
+          placeholder="Buscar"
+          class="border-2 border-gray-300 rounded-md p-2 w-full pl-2 text-gray-700"
+        />
+        <button
+          type="submit"
+          class="p-2 bg-gray-400 hover:bg-gray-500 rounded w-10 h-10 flex items-center justify-center ml-2"
+          title="Buscar"
+        >
+          <Icon name="mdi:magnify" class="text-white w-5 h-5" />
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div
+    id="mobile-menu"
+    class="hidden fixed z-30 w-full bg-white shadow-md top-[60px] md:hidden transition-all duration-500 ease-in-out overflow-hidden"
+  >
+    <ul class="flex justify-around items-center space-x-4 p-4">
+      <li class="text-black font-semibold text-sm cursor-pointer">
+        <a href="/payments">MEDIOS DE PAGO</a>
+      </li>
+      <li class="text-black font-semibold text-sm cursor-pointer">
+        <a href="/shipments">SOBRE ENVÍOS</a>
+      </li>
+      <li class="text-black font-semibold text-sm cursor-pointer">
+        <a href="/enlace6">INFORMACIÓN</a>
+      </li>
+    </ul>
+  </div>
+
+  <div
+    class="hidden md:flex md:flex-row justify-between items-center p-2 top-0 bg-white shadow-md"
+  >
+    <a href="/">
+      <div class="flex flex-row items-center gap-4">
+        <img
+          src="/images/Logo.png"
+          alt="logo"
+          width="200"
+          height="72"
+          class="mx-4"
+        />
+      </div>
+    </a>
+
+    <div class="flex flex-row items-center gap-4 w-full p-1 pl-2 ml-10">
+      <div class="flex flex-row items-center w-full">
+        {
+          withSearch && (
+            <form action="/catalogo" class="w-full relative flex">
+              <input
+                type="text"
+                name="search"
+                value={data?.search || ""}
+                placeholder="Buscar"
+                class="border-2 border-gray-300 rounded-md p-2 w-full pl-2 text-gray-700 bg-gray-100"
+              />
+              <button
+                class="p-2 bg-gray-400 hover:bg-gray-500 rounded w-10 h-10 flex items-center justify-center"
+                title="Buscar"
+              >
+                <Icon name="mdi:magnify" class="text-white w-5 h-5" />
+              </button>
+            </form>
+          )
+        }
+      </div>
+
+      <a href="/calculadora" class="flex items-center gap-2 ml-4">
+        <Icon name="mdi:calculator" class="text-orange-500 w-12 h-12" />
+        <span class="text-gray-700 font-semibold leading-tight">
+          CALCULADORA DE MATERIALES
+        </span>
+      </a>
+
+      {
+        !isReduced ? (
+          <div class="block">
+            <UserButton client:load {...{ token }} />
+          </div>
+        ) : (
+          <div>
+            <ModalCart client:only {...{ relative: true }} />
+          </div>
+        )
+      }
+    </div>
+  </div>
+
+  <nav class="hidden md:flex z-10 bg-orange-500 w-full py-2 ]">
+    <ul class="flex justify-center items-center space-x-6 mx-auto max-w-5xl">
+      <li class="relative group">
+        <a
+          class="text-white font-semibold px-4 py-2 rounded hover:bg-gray-300 hover:text-gray-900 cursor-pointer transition-colors"
+          >PRODUCTOS</a
+        >
+        <ul
+          class="absolute left-0 hidden group-hover:block bg-white shadow-lg rounded mt-2 z-20"
+          style="width: 200px;"
+        >
+          {
+            groups.map((group) => (
+              <li class="py-2 px-4 hover:bg-gray-100 cursor-pointer">
+                <a
+                  class="text-xs font-semibold flex items-center"
+                  href={`/categoria/${group.slug}`}
+                >
+                  <Icon
+                    name="mdi:chevron-right"
+                    class="text-orange-500 w-7 h-7 mr-2"
+                  />
+                  {group.nombre}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </li>
+      <li
+        class="text-white font-semibold px-4 py-2 rounded hover:bg-gray-300 hover:text-gray-900 cursor-pointer transition-colors"
+      >
+        <a href="/enlace2">INICIO</a>
+      </li>
+      <li
+        class="text-white font-semibold px-4 py-2 rounded hover:bg-gray-300 hover:text-gray-900 cursor-pointer transition-colors"
+      >
+        <a href="/enlace3">PROMOCIONES</a>
+      </li>
+      <li
+        class="text-white font-semibold px-4 py-2 rounded hover:bg-gray-300 hover:text-gray-900 cursor-pointer transition-colors"
+      >
+        <a href="/payments">MEDIOS DE PAGO</a>
+      </li>
+      <li
+        class="text-white font-semibold px-4 py-2 rounded hover:bg-gray-300 hover:text-gray-900 cursor-pointer transition-colors"
+      >
+        <a href="/shipments">SOBRE ENVÍOS</a>
+      </li>
+      <li
+        class="text-white font-semibold px-4 py-2 rounded hover:bg-gray-300 hover:text-gray-900 cursor-pointer transition-colors"
+      >
+        <a href="/enlace6">INFORMACIÓN</a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="w-full">
+    <CartList client:load />
+  </main>
+
+  <script>
+    window.onload = function () {
+      // Función para alternar el menú
+      window.toggleMenu = function () {
+        const menu = document.getElementById("mobile-menu");
+
+        if (menu.classList.contains("hidden")) {
+          menu.classList.remove("hidden");
+
+          // Calcular altura del contenido
+          const scrollHeight = menu.scrollHeight;
+          menu.style.height = `${scrollHeight}px`;
+
+          // Después de la transición, cambiar a `auto` para evitar problemas de diseño
+          setTimeout(() => {
+            menu.style.height = "auto";
+          }, 500); // Igual al tiempo de la transición
+        } else {
+          // Volver a `height` antes de colapsar
+          menu.style.height = `${menu.scrollHeight}px`;
+
+          // Forzar el recálculo de estilo antes de colapsar
+          requestAnimationFrame(() => {
+            menu.style.height = "0";
+          });
+
+          // Ocultar completamente después de la transición
+          setTimeout(() => {
+            menu.classList.add("hidden");
+          }, 500); // Igual al tiempo de la transición
+        }
+      };
+
+      window.toggleSearch = function () {
+        const searchForm = document.getElementById("mobile-search-form");
+        const searchIcon = document.getElementById("search-icon");
+        const closeIcon = document.getElementById("close-icon");
+
+        // Alternamos el formulario de búsqueda
+        searchForm.classList.toggle("hidden");
+
+        // Cambiar visibilidad de los íconos
+        if (searchForm.classList.contains("hidden")) {
+          searchIcon.classList.remove("hidden");
+          closeIcon.classList.add("hidden");
+        } else {
+          searchIcon.classList.add("hidden");
+          closeIcon.classList.remove("hidden");
+        }
+
+        // Si el formulario está visible, ponemos el foco en el input
+        if (!searchForm.classList.contains("hidden")) {
+          searchForm.querySelector("input").focus();
+        }
+      };
+    };
+  </script>
+
+  <style>
+    #mobile-menu {
+      height: 0;
+      overflow: hidden;
+      transition: height 0.5s ease-in-out;
+    }
+    #mobile-menu.hidden {
+      height: 0; 
+    }
+    #mobile-menu.visible {
+      height: auto; 
+    }
+
+    #mobile-search-form:not(.hidden) {
+      transform: scaleX(1); 
+    }
+    #mobile-search-form {
+      width: 395px; 
+    }
+    #search-icon {
+      transition: transform 0.3s ease;
+    }
+
+    #search-icon.x {
+      display: none;
+    }
+
+    #search-icon.magnify {
+      display: block;
+    }
+
+    #mobile-search-form.hidden {
+      display: none;
+    }
+  </style>
+</div>

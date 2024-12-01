@@ -1,0 +1,139 @@
+---
+import { TOKEN_AUTH } from "../../../config/constants";
+import { configDataResponse, getProducts, getGroupBySlug } from "../../../services";
+import type { ICatalogResponse } from "../../../types/ICatalog";
+import type { IConfig } from "../../../types/IConfig";
+import CategoryLayout from "../../../layouts/category-layout.astro";
+import { ViewTransitions } from "astro:transitions";
+import FooterMenu from '../../../components/shared/FooterMenu.astro';
+
+
+const slug = Astro.params.slug as string;
+
+const pathname = Astro.url.pathname;
+
+const line = Astro.url.searchParams.get("line") || null;
+const subline = Astro.url.searchParams.get("subline") || null;
+
+const search = Astro.url.searchParams.get("search") || "";
+const pageParam = Astro.url.searchParams.get("page") || "1";
+const page = parseInt(pageParam, 10);
+const sortparam = Astro.url.searchParams.get("sortby") || "priority-desc";
+const sortBy = sortparam.split("-")[0];
+const sortOrder = sortparam.split("-")[1];
+
+
+const filter = [
+  { published: true },
+  { status: "active" },
+] as unknown[];
+
+if (line) {
+  filter.push({ line: line });
+  if (subline) {
+    filter.push({ subline: subline });
+  }
+}
+
+const group = await getGroupBySlug(slug);
+
+if (!group) {
+  return {
+    status: 404,
+    headers: {
+      "cache-control": "max-age=0, s-maxage=3600",
+    },
+  };
+}
+
+filter.push({ group: group.codigo });
+
+const [ results, config ] : [ICatalogResponse, IConfig]= await Promise.all([getProducts(filter, sortBy, sortOrder, page, search), configDataResponse()]);
+
+const cookies = Astro.cookies;
+const token = cookies.get(TOKEN_AUTH);
+
+const data = {
+  results,
+  search,
+  page,
+  pathname,
+  line: "",
+  subline: "",
+  sortby: sortparam
+};
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Materiales para construccion en seco" />
+    <meta name="author" content="Vallejos Materiales" />
+    <meta
+      name="keywords"
+      content="Materiales de construccion en seco placas de yeso durlock en Concordia, Entre Rios, Argentina"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="google" content="notranslate" />
+    <meta
+      name="image"
+      content={group.foto}
+    />
+    <meta property="og:title" content="Vallejos Materiales" />
+    <meta property="og:type" content="article" />
+    <meta
+      property="og:url"
+      content="https://test.vallejosmateriales.com.ar/"
+    />
+    <meta
+      property="og:image"
+      itemprop="image"
+      content={group.foto}
+    />
+    <meta
+      property="og:description"
+      content="Materiales para construccion en seco"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href={group.foto}
+    />
+    <title>{group.nombre} - Vallejos Materiales</title>
+    <ViewTransitions />
+    </head>
+
+  <body>
+    <style>
+      body {
+        background-color: #ebebeb;
+      }
+    </style>
+
+    <link
+      itemprop="thumbnailUrl"
+      href={group.foto}
+    />
+    <span
+      itemprop="thumbnail"
+      itemscope
+      itemtype="http://schema.org/ImageObject"
+    >
+      <link
+        itemprop="url"
+        href=href={group.foto}
+      />
+    </span>
+    <CategoryLayout  {...{data, config, token: token?.value, group}} />
+
+    <FooterMenu />
+  </body>
+</html>

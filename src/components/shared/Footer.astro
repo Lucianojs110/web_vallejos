@@ -1,0 +1,110 @@
+---
+import type { IConfig } from "../../types/IConfig";
+
+interface RecordWithData extends Record<string, any> {
+  data?: IConfig;
+}
+
+const { data }: RecordWithData = Astro.props;
+import Icon from "astro-icon";
+---
+
+<footer class={`bottom-0 left-0 right-0 bg-gray-200 text-white pb-16 md:pb-2`}>
+  <div class={`container mx-auto px-6 py-4`}>
+    <div class={`flex flex-col md:flex-row justify-between items-center gap-5`}>
+      
+      <!-- inicio columna-->
+   
+      <div class={`w-full md:w-1/2 text-center md:text-left flex flex-col gap-5 hidden md:block`}>
+        <h2 class={`text-xl font-bold text-gray-700`}>INFORMACIÓN</h2>
+        <div class={`flex flex-col md:flex-row gap-5`}>
+          <div class={`flex flex-col mt-5 md:mt-0`}>
+            <a href="/Instaladores" class="text-gray-700 no-underline flex items-center text-lg">
+              <Icon name="mdi:chevron-right" class="text-orange-500 w-7 h-7 mr-2" />
+              Instaladores
+            </a>
+            <a href="/Medios_de_Pago" class="text-gray-700 no-underline flex items-center text-lg">
+              <Icon name="mdi:chevron-right" class="text-orange-500 w-7 h-7 mr-2" />
+              Medios de pago 
+            </a>
+            <a href="/Envios" class="text-gray-700 no-underline flex items-center text-lg">
+              <Icon name="mdi:chevron-right" class="text-orange-500 w-7 h-7 mr-2" />
+              Envíos a domicilios
+            </a>
+            <a href="/uso" class="text-gray-700 no-underline flex items-center text-lg">
+              <Icon name="mdi:chevron-right" class="text-orange-500 w-7 h-7 mr-2" />
+              Uso del sitio web
+            </a>
+          </div>
+          
+          <div class={`flex flex-col mt-5 md:mt-0`}>
+            <a href="/aviso_legal" class="text-gray-700 no-underline flex items-center text-lg">
+              <Icon name="mdi:chevron-right" class="text-orange-500 w-7 h-7 mr-2" />
+              Aviso legal
+            </a>
+            <a href="/acopio" class="text-gray-700 no-underline flex items-center text-lg">
+              <Icon name="mdi:chevron-right" class="text-orange-500 w-7 h-7 mr-2" />
+              Acopio de materiales
+            </a>
+            <a href="/politicas_devolucion" class="text-gray-700 no-underline flex items-center text-lg">
+              <Icon name="mdi:chevron-right" class="text-orange-500 w-7 h-7 mr-2" />
+              Politicas de devolución
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- fin columna -->
+      <div class={`w-full md:w-1/2 text-center md:text-right flex flex-col gap-1`}>
+        <div>
+          <a
+            href={`https://wa.me/${data?.whatsapp}?text=Hola!`}
+            target="_blank"
+            class={`w-full text-center md:text-right text-lg text-gray-700 leading-snug`}
+          >
+            Whatsapp: {data?.whatsapp}
+          </a>
+        </div>
+        <div>
+          <a
+            href={`tel:${data?.telefono}`}
+            class={`w-full text-center md:text-right text-lg text-gray-700 leading-snug`}
+          >
+            Telefono: {data?.telefono}
+          </a>
+        </div>
+        <div>
+          <a
+            href={`mailto:${data?.email}?Subject=Contacto web`}
+            class={`w-full text-center md:text-right text-lg text-gray-700 leading-snug`}
+          >
+            Email: {data?.email}
+          </a>
+        </div>
+        <div>
+          <span class={`w-full text-center md:text-right text-lg text-gray-700 leading-snug`}>
+            Dirección: {data?.direccion}
+          </span>
+        </div>
+        <div>
+          <span class={`w-full text-center md:text-right text-lg text-gray-700 leading-snug`}>
+            Lunes a Viernes de {data?.semana}
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Nueva fila con imagen centrada y texto debajo -->
+    <div class={`w-full text-center mt-8`}>
+      <a href="http://qr.afip.gob.ar/?qr=3V78SivkOmuL9bgPeJDKtw,," target="_F960AFIPInfo">
+        <img 
+          src="http://www.afip.gob.ar/images/f960/DATAWEB.jpg" 
+          style={`width: 50px; height: auto; display: inline-block; margin: 0 auto;`} 
+        />
+      </a>
+      <p class={`text-black text-lg mt-2`}>COPYRIGHT 2020 - POR ZARO ESTUDIO CREATIVO PARA VALLEJOS MATERIALES</p>
+    </div>
+    
+
+  </div>
+</footer>

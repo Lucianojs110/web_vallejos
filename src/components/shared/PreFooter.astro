@@ -1,0 +1,20 @@
+---
+import { getAllGroups } from "../../services";
+const groups = await getAllGroups();
+---
+
+<div class="bg-yellow-600 text-white flex justify-center items-center p-6 font-bold text-xl">
+    Vallejos Materiales
+</div>
+
+<div class="w-[100%] bg-white p-6">
+    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 w-[100%] md:w-[80%] xl:w-[70%] mx-auto">
+            {groups.map(
+                (group : { slug: string, nombre: string}) => (
+                    <div>
+                        <a class="text-xs font-semibold" href={`/categoria/${group.slug}`}>{group.nombre}</a>
+                    </div>
+                )
+            )}
+    </div>
+</div>

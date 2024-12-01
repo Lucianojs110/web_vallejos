@@ -1,0 +1,30 @@
+---
+import MiniCard from "./MiniCard.astro";
+
+import type { IProductDetailResponse } from "./../../types/IProducDetail";
+
+import ProductCard from "../Catalog/ProductCard.astro";
+
+interface RecordWithData extends Record<string, any> {
+  detail?: IProductDetailResponse;
+}
+
+const { detail }: RecordWithData = Astro.props;
+
+const data = detail as IProductDetailResponse;
+---
+
+<div class="flex flex-col gap-5 px-6 my-10">
+  <h2 class="!text-gray-500 flex justify-center items-center p-6 font-bold text-xl">Productos Relacionados</h2>
+  <div class="flex gap-6 overflow-x-auto snap-x snap-mandatory">
+    {
+      data.relatedProducts.map((product) => (
+        <div class="snap-center flex-shrink-0 w-[calc(50vw-1.5rem)] sm:w-[calc(100vw/3-1.5rem)] md:w-[calc(100vw/4-1.5rem)] lg:w-[calc(100vw/5-1.5rem)]">
+          <ProductCard key={product.id} data={product} />
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+

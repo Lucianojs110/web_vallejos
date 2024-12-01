@@ -1,0 +1,58 @@
+---
+import CheckoutStepper from "./../../islands/checkout/CheckoutStepper/CheckoutStepper";
+import Footer from "./../../components/shared/Footer.astro";
+import { configDataResponse, shipmentsResponse } from "../../services";
+import { TOKEN_AUTH } from "../../config/constants";
+import type { IConfig } from "../../types/IConfig";
+import Navbar from "../../components/shared/Navbar.astro";
+import CheckoutPage from "../../islands/CheckoutPage";
+
+const apiKey = "MZ8ZxyPhh6Ixw2km86bjWWknB5JroVlC";
+const urlDecidir = "https://developers.decidir.com/api/v2";
+
+
+const [ shipments, config ] : [any, IConfig]= await Promise.all([shipmentsResponse(), configDataResponse()]);
+
+const cookies = Astro.cookies;
+const token = cookies.get(TOKEN_AUTH);
+
+const data = { apiKey, urlDecidir, shipments, token: token?.value || null, config };
+
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Materiales para construccion en seco" />
+    <meta name="author" content="Vallejos Materiales" />
+
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="googlebot" content="noindex, nofollow" />
+    <meta name="google" content="notranslate" />
+
+    <script src=" https://live.decidir.com/static/v2.4/decidir.js" is:inline
+    ></script>
+    <title>Vallejos Materiales - Checkout</title>
+
+  </head>
+
+  <body>
+    <style>
+      body {
+        background-color: #ebebeb;
+      }
+    </style>
+
+    <Navbar {...{data, token: token?.value}} />
+
+    <div class={`mt-16 pt-12 min-h-[90vh] bg-[#fafafa]`}>
+       <!-- <CheckoutStepper data={data} client:load /> -->
+
+       <CheckoutPage data={data} client:only />
+    </div>
+  </body>
+  <Footer data={config} />
+</html>

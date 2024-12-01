@@ -1,0 +1,47 @@
+---
+import type { IDataCatalog } from "../../types/ICatalog";
+import Icon from "astro-icon";
+
+interface RecordWithData extends Record<string, any> {
+  data?: IDataCatalog;
+}
+
+const { data }: RecordWithData = Astro.props;
+---
+
+<div>
+  <div class="flex items-center"> <!-- Añadido: clases de flexbox para alineación -->
+    <a href="/" class="text-blue-950 hover:text-gray-700">
+      <Icon name="mdi:home" class="text-gray-700 w-6 h-6 mr-2" /> <!-- Icono ajustado -->
+    </a>
+    {
+      data?.line?.length ? (
+        <>
+          <span class="mx-2 text-gray-500">{">"}</span>
+          {data?.subline?.length ? (
+            <a
+              class="text-blue-950 hover:text-gray-700"
+              href={`/${data?.line}${data?.search?.length ? `?search=${data?.search}` : ""}`}
+            >
+              {data?.line}
+            </a>
+          ) : (
+            <span class="text-gray-900 hover:text-gray-700">
+              {data?.line}
+            </span>
+          )}
+        </>
+      ) : null
+    }
+    {
+      data?.subline?.length ? (
+        <>
+          <span class="mx-2 text-gray-900">{">"}</span>
+          <span class="text-gray-900 hover:text-gray-700">
+            {data?.subline}
+          </span>
+        </>
+      ) : null
+    }
+  </div>
+</div>

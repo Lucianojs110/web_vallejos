@@ -1,0 +1,89 @@
+---
+
+import Navbar from "../components/shared/Navbar.astro";
+import Footer from "../components/shared/Footer.astro";
+import SideNavigatorBar from "../components/Catalog/SideNavigatorBar.astro";
+import BreadCrumb from "../components/shared/BreadCrumb.astro";
+import ListCards from "../components/Catalog/ListCards.astro";
+
+import ContentFiltersAndSortButtons from "../islands/ContentFiltersAndSortButtons";
+import SortBySelectors from "../islands/SortBySelectors";
+import Pagination from "../islands/Pagination";
+import ModalCart from "../islands/cart/ModalCart";
+import { shipmentsResponse } from "../services";
+import InformationRibbon from "../islands/InformationRibbon";
+import PreFooter from "../components/shared/PreFooter.astro";
+
+const shipments = await shipmentsResponse();
+
+const { data, config, token, group } = Astro.props;
+
+---
+
+<Navbar {...{data, token, withSearch: true}} />
+<div
+  class="flex gap-2 items-center justify-center flex-col w-full xl:w-5/6 mx-auto text-lg"
+  id="main"
+>
+
+
+{
+  data?.results && (
+  <div class="w-full p-2 mt-20 md:mt-0 mt-20">
+      <BreadCrumb data={data} class="text-2xl font-bold"/>
+      </div>
+      )
+    }
+
+
+  {
+    data?.results?.products?.length ? (
+      <>
+        
+
+        <ContentFiltersAndSortButtons client:load data={data} />
+
+        <SortBySelectors
+          search={data.search}
+          pathname={data.pathname}
+          sortby={data.sortby}
+          client:load
+        />
+
+        <div class="flex gap-12">
+          
+          <div class="md:block hidden" style={{ minWidth: "200px" }}>
+            <h1 class="text-md font-bold">{group.nombre}</h1>
+            <h4 class="text-md font-bold mb-3">Rubros</h4>
+            <SideNavigatorBar
+              menu={data.results.menu}
+              line={data.line}
+              search={data.search}
+            />
+          </div>
+          <div>
+            <ListCards data={data.results.products} />
+            <Pagination
+              currentPage={data.page}
+              totalPages={data.results.totalPages}
+              search={data.search}
+              pathname={data.pathname}
+              client:load
+            />
+          </div>
+        </div>
+      </>
+    ) : (
+      <div>Sin resultados</div>
+    )
+  }
+</div>
+
+<div class="mt-4"></div>
+
+<div class="hidden md:block">
+  <ModalCart client:only relative={false} />
+</div>
+
+
+<Footer data={config}/>

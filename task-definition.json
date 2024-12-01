@@ -1,0 +1,33 @@
+{
+  "family": "app-web-task",
+  "containerDefinitions": [
+    {
+      "name": "app-web-task",
+      "image": "029068529112.dkr.ecr.us-east-1.amazonaws.com/app-web-next",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000
+        }
+      ],
+      "memory": "1024",
+      "cpu": "512",
+      "environment": [
+        {
+          "name": "PAYWAY_PUBLIC_APIKEY",
+          "value": "MZ8ZxyPhh6Ixw2km86bjWWknB5JroVlC"
+        },
+        {
+          "name": "BASE_URL_DECIDIR",
+          "value": "https://developers.decidir.com/api/v2"
+        }
+      ]
+    }
+  ],
+  "requiresCompatibilities": ["FARGATE"],
+  "networkMode": "awsvpc",
+  "memory": "1024",
+  "cpu": "512",
+  "executionRoleArn": "arn:aws:iam::029068529112:role/ecsTaskExecutionRole"
+}

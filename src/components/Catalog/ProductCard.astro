@@ -1,0 +1,100 @@
+---
+import ButtonAddToCart from "../../islands/ButtonAddToCart";
+import type { IProductCatalogResponse } from "../../types/ICatalog";
+import { formatCurrency } from "../../utils/formatter";
+
+interface RecordWithData extends Record<string, any> {
+  data?: IProductCatalogResponse;
+}
+
+const { data }: RecordWithData = Astro.props;
+
+const product = data as IProductCatalogResponse;
+---
+
+<div
+  class={`bg-white w-auto max-w-[18rem] rounded md:p-0  overflow-hidden shadow-lg relative hover:shadow-2xl`}
+>
+  <a
+    href={`/catalogo/${product.slug}`}
+    class={`inline-block py-1 text-sm font-semibold mr-2`}
+    title={`Ver más información del producto ${product.name}`}
+  >
+    <!-- Imagen del producto -->
+    <div class={`relative flex justify-center md:p-2 p-1 md:min-h-[210px] min-h-[150px]`}>
+      <img
+        class={`w-11/12 h-full object-contain brightness-90 md:min-h-[210px] min-h-[150px]`}
+        src={product.mainImage}
+        alt={product.name}
+      />
+      {product.stock < 1 && (
+        <div class={`absolute top-0 right-0 bg-red-800 text-white px-1 text-xs`}>
+          Sin stock
+        </div>
+      )}
+    </div>
+
+    <!-- Nombre del producto debajo de la imagen -->
+    <div class={`md:px-2 px-1 md:py-2 py-1`}>
+      <div class={`font-semibold md:text-lg text-md text-gray-800`}>
+        {product.name}
+      </div>
+    </div>
+
+    <!-- Precio en verde y más grande -->
+    <div class={`flex md:px-2 px-1 md:py-1 py-0.5 items-center justify-left text-green-700 font-bold text-lg md:text-2xl`}>
+      {product.benefitPercentDiscount > 0 && (
+        <div class={`flex gap-2 items-center`}>
+          <div class={`inline-block text-sm md:text-md text-gray-500`}>
+            <del>{formatCurrency(Math.floor(product.priceDifferenceWithIvaAndDiscount))}</del>
+          </div>
+          <div class={`inline-block font-semibold text-yellow-900`}>
+            {product.benefitPercentDiscount}% OFF
+          </div>
+        </div>
+      )}
+      <div>
+        <p
+          class={`text-green-700 font-extrabold text-lg md:text-2xl`}
+        >
+          {formatCurrency(Math.floor(product.priceWithIvaAndDiscount))}
+        </p>
+      </div>
+    </div>
+
+   <!-- Información adicional -->
+<div class={`px-2 mb-20`}> <!-- Aumenté el margen inferior de mb-24 a mb-32 -->
+  <p class={`text-gray-700 text-sm font-light`}>
+    {product.brandDetail?.name}
+  </p>
+  <p class={`text-gray-700 text-xs font-extralight`}>
+    SKU: {product.code}
+  </p>
+</div>
+
+<!-- Botón de Añadir al Carrito: cuadrado, naranja y sin iconos -->
+<div class={`absolute bottom-0 left-0 w-full p-2`}> <!-- Cambié 'bottom-0' a 'bottom-4' para mover el botón un poco más arriba -->
+  <div class={`px-2 py-4 flex justify-center`}>
+    <ButtonAddToCart
+      client:visible
+      product={{
+        id: product.id,
+        name: product.name,
+        slug: product.slug,
+        quantity: 1,
+        acopio: 0,
+        mainImage: product.mainImage,
+        priceWithIvaAndDiscount: product.priceDifferenceWithIvaAndDiscount,
+        priceWithIva: product.priceWithIva,
+        code: product.code,
+        stock: product.stock,
+        weight: product.weight,
+      }}
+      
+    >
+      Añadir al Carrito
+    </ButtonAddToCart>
+  </div>
+</div>
+
+</div>

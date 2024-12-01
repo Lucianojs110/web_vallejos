@@ -1,0 +1,37 @@
+---
+import BannerCarouselReact from '../../islands/BannerCarrousel/BannerCarousel.jsx';
+---
+
+<div class="carousel-container">
+  <BannerCarouselReact client:load  />
+</div>
+
+<style>
+  .carousel-container {
+    width: 100%;
+    max-width: 1800px;
+    margin: auto;
+    
+  }
+  .carousel-container img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  
+
+  .swiper-button-next,
+.swiper-button-prev {
+  color: white; /* Cambia el color de las flechas a blanco */
+  font-size: 24px; /* Ajusta el tamaño de las flechas */
+  text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5); /* Añade un pequeño contorno para mejorar la visibilidad */
+}
+
+@media (max-width: 768px) {
+  .carousel-container {
+    margin-top: 60px; /* Ajusta según la altura del navbar en móvil */
+  }
+}
+</style>
+
